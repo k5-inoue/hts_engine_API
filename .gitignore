@@ -157,7 +157,7 @@ $RECYCLE.BIN/
 .lock-*
 *.lib
 *.log
-build
+src/build/bin
 Makefile
 .deps/
 config.status
