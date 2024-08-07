@@ -1,17 +1,21 @@
 #!/bin/bash
 
 SRC_DIR=".."
-OUT_DIR="./bin/linux"
-LIB_DIR="hts_engine_API-linux-x64-static_lib"
+OUT_DIR="./bin/macos"
+LIB_DIR="hts_engine_API-osx-coreml-universal-static_lib"
+
+CPU_COUNT=$(sysctl -n hw.physicalcpu)
+PARALLEL_JOB_COUNT=${PARALLEL_JOB_COUNT:=$CPU_COUNT}
 
 # for clean build
 rm -rf ${OUT_DIR}/*
 
-# Build for linux
-cmake -S ../ -G "Unix Makefiles" -B ${OUT_DIR} \
+# Build for macos
+cmake -S ../ -G "Ninja" -B ${OUT_DIR} \
+    -D CMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
     -D CMAKE_BUILD_TYPE=Release
 
-cmake --build ${OUT_DIR} --config Release -j 4
+cmake --build ${OUT_DIR} --parallel ${PARALLEL_JOB_COUNT}
 
 # collect lib & header
 mkdir -p ${OUT_DIR}/${LIB_DIR}/{lib,include}
